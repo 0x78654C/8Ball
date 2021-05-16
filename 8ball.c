@@ -1,75 +1,79 @@
 /*Simple Magic 8Ball game build in C */
 
+/* ToDo:
+	1. Remove MAXCHARS and MAXWORDS constants and dynamically
+	add the words with malloc/realloc
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#define MAXCHARS 100
+#define MAXWORDS 1000
 
-int arr[]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19};
-void swap(int *a, int *b);
-void randomize(int arr[], int n);
+void clearAnsArr(char ansList[MAXWORDS][MAXCHARS]);
 
-int main(int argc, char *argv[]){
+int main(int argc, char **argv){
+
+	srandom(time(NULL));
+	int words = 0;
+	// if no .txt file is provided use this default answers
+	char answerList[MAXWORDS][MAXCHARS] = {
+		"It is Certain.",
+		"It is decidedly so.",
+		"Without a doubt.",
+		"Yes definitely.",
+		"You may rely on it.",
+		"As I see it, yes.",
+		"Most likely.",
+		"Outlook good.",
+		"Yes.",
+		"Signs point to yes.",
+		"Reply hazy, try again.",
+		"Ask again later.",
+		"Better not tell you now.",
+		"Cannot predict now.",
+		"Concentrate and ask again",
+		"Don't count on it.",
+		"My reply is no.",
+		"My sources say no.",
+		"Outlook not so good.", 
+		"Very doubtful."
+	};
 	
-	if(argc<2){
+	if(argc < 2){
 		printf("You must provide a question for Scott to Answer!\n");
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
-	
-	char *answerList[]={"It is Certain.",
-	"It is decidedly so.",
-	"Without a doubt.",
-	"Yes definitely.",
-	"You may rely on it.",
-	"As I see it, yes.",
-	"Most likely.",
-	"Outlook good.",
-	"Yes.",
-	"Signs point to yes.",
-	"Reply hazy, try again.",
-	"Ask again later.",
-	"Better not tell you now.",
-	"Cannot predict now.",
-	"Concentrate and ask again",
-	"Don't count on it.",
-	"My reply is no.",
-	"My sources say no.",
-	"Outlook not so good.", 
-	"Very doubtful."};
-	   
-
-    int n= sizeof(arr)/sizeof(arr[0]);
-	randomize(arr,n);          
-
-    int s=0;                           
-    for(int i= 0; i<n;i++){    
-	    int index = arr[i];
-   	 	if(s==0){
-       		printf("Scott says: %s\n",answerList[index]);
-	   		s++;
+	else if(argc == 3){
+		FILE *ansFile = fopen(argv[1], "r");
+		if(ansFile == NULL){
+			printf("Could not open the file %s\n", argv[1]);
+			exit(EXIT_FAILURE);
 		}
-   }
-	   
-	return 0;
-
-}
-
-
-void swap(int *a, int *b){
-	int temp = *a;
-	*a = *b;
-	*b= temp;
-}
-
-void randomize(int arr[], int n){
-	srand(time(NULL));
-	int i;
-	for(i = n-1; i > 0; i--){
-		
-		int j= rand() % (i+1);
-		swap(&arr[i], &arr[j]);
+		clearAnsArr(answerList); // clear all the previous data in the array
+		char str[MAXCHARS];
+		int i = 0;
+		while(fgets(str, MAXCHARS, ansFile) != NULL){
+			sprintf(answerList[i++], "%s", str); // get line by line every word
+		}
+		fclose(ansFile);
+		words = i;
 	}
+	int index = random() % words; // random word from 0 to (word - 1)
+	printf("Scott says: %s", answerList[index]);
+
+	exit(EXIT_SUCCESS);
+
 }
 
+void clearAnsArr(char ansList[MAXWORDS][MAXCHARS]){
+	int i;
+	for(i = 0; i < MAXWORDS; i++)
+		strcpy(ansList[0], "");
+}
 
