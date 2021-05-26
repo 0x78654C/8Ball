@@ -21,38 +21,27 @@ int main(int argc, char **argv){
 
 	srandom(time(NULL));
 	int words = 0;
-	// if no .txt file is provided use this default answers
-	char answerList[MAXWORDS][MAXCHARS] = {
-		"It is Certain.",
-		"It is decidedly so.",
-		"Without a doubt.",
-		"Yes definitely.",
-		"You may rely on it.",
-		"As I see it, yes.",
-		"Most likely.",
-		"Outlook good.",
-		"Yes.",
-		"Signs point to yes.",
-		"Reply hazy, try again.",
-		"Ask again later.",
-		"Better not tell you now.",
-		"Cannot predict now.",
-		"Concentrate and ask again",
-		"Don't count on it.",
-		"My reply is no.",
-		"My sources say no.",
-		"Outlook not so good.", 
-		"Very doubtful."
-	};
+	char answerList[MAXWORDS][MAXCHARS] = {0};
 	
 	if(argc < 2){
 		printf("You must provide a question for Scott to Answer!\n");
 		exit(EXIT_FAILURE);
 	}
-	else if(argc == 3){
-		FILE *ansFile = fopen(argv[1], "r");
+	else {
+		
+		if(strlen(argv[argc - 1]) > 2 ){ //we check the length of the arg with the question mark to be bigger then 3 for an more realistic question to be asked
+			if(strstr(argv[argc - 1],"?") == NULL){ //check for question mark
+				printf("Your question must contain a question mark(?) !\n");
+				exit(EXIT_FAILURE);
+			}
+		}else{
+			printf("You must provide a real question for Scott to Answer!\n");
+			exit(EXIT_FAILURE);
+		}
+
+		FILE *ansFile = fopen("answers.txt", "r");
 		if(ansFile == NULL){
-			printf("Could not open the file %s\n", argv[1]);
+			printf("Could not open the file answers.txt");
 			exit(EXIT_FAILURE);
 		}
 		clearAnsArr(answerList); // clear all the previous data in the array
