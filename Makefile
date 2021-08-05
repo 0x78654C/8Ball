@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -Wextra
 LDFLAGS = 
 EXEC = 8ball
 VPATH = sources headers
@@ -20,8 +20,9 @@ $(OBJDIR)/%.o: %.c
 clean:
 	rm $(EXEC)
 	
-cleanest: clean
+cleanest:
 	rm $(OBJDIR)/*.o
 	
 mkndirs:
 	if [ ! -e obj ]; then mkdir obj; fi
+	
